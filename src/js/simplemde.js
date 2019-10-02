@@ -1320,7 +1320,7 @@ function SimpleMDE(options) {
 		for(var key in toolbarBuiltInButtons) {
 			// eslint-disable-next-line no-prototype-builtins
 			if(toolbarBuiltInButtons.hasOwnProperty(key)) {
-				if(key.indexOf("separator-") != -1) {
+				if(key.indexOf("separator-") !== -1) {
 					options.toolbar.push("|");
 				}
 
@@ -1359,7 +1359,7 @@ function SimpleMDE(options) {
 
 
 	// Merging the promptTexts, with the given options
-	options.promptTexts = promptTexts;
+	options.promptTexts = extend({}, promptTexts, options.promptTexts || {});
 
 
 	// Merging the blockStyles, with the given options
