@@ -1377,6 +1377,8 @@ SimpleMDE.prototype.markdown = function(text) {
 			};
 		}
 
+		markedOptions.sanitize = true;
+
 
 		// Set options
 		marked.setOptions(markedOptions);
