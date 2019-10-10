@@ -1,9 +1,3 @@
-/**
- * simplemde v1.11.2
- * Copyright Next Step Webs, Inc.
- * @link https://github.com/NextStepWebs/simplemde-markdown-editor
- * @license MIT
- */
 /* BASICS */
 
 .CodeMirror {
@@ -556,18 +550,6 @@ span.CodeMirror-selectedtext { background: none; }
     display: inline-block;
     min-width: 4em;
     margin-left: 1em;
-}
-
-.editor-statusbar .lines:before {
-    content: 'lines: '
-}
-
-.editor-statusbar .words:before {
-    content: 'words: '
-}
-
-.editor-statusbar .characters:before {
-    content: 'characters: '
 }
 
 .editor-preview {

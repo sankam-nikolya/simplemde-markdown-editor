@@ -14,12 +14,7 @@ var gulp = require("gulp"),
 	source = require("vinyl-source-stream"),
 	rename = require("gulp-rename");
 
-var banner = ["/**",
-	" * <%= pkg.name %> v<%= pkg.version %>",
-	" * Copyright <%= pkg.company %>",
-	" * @link <%= pkg.homepage %>",
-	" * @license <%= pkg.license %>",
-	" */",
+var banner = [
 	""].join("\n");
 
 gulp.task("prettify-js", gulp.series([], function() {
@@ -36,6 +31,20 @@ gulp.task("prettify-css", gulp.series([], function() {
 
 gulp.task("lint", gulp.series(["prettify-js"], function() {
 	return gulp.src("./src/js/**/*.js")
+		.pipe(debug())
+		.pipe(eslint())
+		.pipe(eslint.format())
+		.pipe(eslint.failAfterError());
+}));
+
+gulp.task("prettify-langs-js", gulp.series([], function() {
+	return gulp.src("./src/js/langs/*.js")
+		.pipe(prettify({js: {brace_style: "collapse", indent_char: "\t", indent_size: 1, max_preserve_newlines: 3, space_before_conditional: false}}))
+		.pipe(gulp.dest("./src/js/langs"));
+}));
+
+gulp.task("lint-langs", gulp.series(["prettify-langs-js"], function() {
+	return gulp.src("./src/js/langs/*.js")
 		.pipe(debug())
 		.pipe(eslint())
 		.pipe(eslint.format())
@@ -74,6 +83,15 @@ gulp.task("scripts", gulp.series(["browserify:debug", "browserify", "lint"], fun
 		.pipe(gulp.dest("./dist/"));
 }));
 
+gulp.task("scripts-langs", gulp.series(["lint-langs"], function() {
+
+	return gulp.src("./src/js/langs/*.js")
+		.pipe(uglify())
+		.pipe(buffer())
+		.pipe(header(banner, {pkg: pkg}))
+		.pipe(gulp.dest("./dist/langs"));
+}));
+
 gulp.task("styles", gulp.series(["prettify-css"], function() {
 	var css_files = [
 		"./node_modules/codemirror/lib/codemirror.css",
@@ -92,4 +110,4 @@ gulp.task("styles", gulp.series(["prettify-css"], function() {
 		.pipe(gulp.dest("./dist/"));
 }));
 
-gulp.task("default", gulp.series(["scripts", "styles"]));
+gulp.task("default", gulp.series(["scripts", "scripts-langs", "styles"]));

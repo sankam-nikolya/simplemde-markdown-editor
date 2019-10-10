@@ -202,18 +202,6 @@
     margin-left: 1em;
 }
 
-.editor-statusbar .lines:before {
-    content: 'lines: '
-}
-
-.editor-statusbar .words:before {
-    content: 'words: '
-}
-
-.editor-statusbar .characters:before {
-    content: 'characters: '
-}
-
 .editor-preview {
     padding: 10px;
     position: absolute;

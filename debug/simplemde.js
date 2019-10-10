@@ -1,9 +1,3 @@
-/**
- * simplemde v1.11.2
- * Copyright Next Step Webs, Inc.
- * @link https://github.com/NextStepWebs/simplemde-markdown-editor
- * @license MIT
- */
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.SimpleMDE = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: https://codemirror.net/LICENSE
@@ -14228,12 +14222,12 @@ function drawLink(editor) {
 		options.drawLink(__drawLink(editor));
 	} else {
 		if(options.promptURLs) {
-			url = prompt(options.promptTexts.link);
+			url = prompt(translate(options.promptTexts.link));
 			if(!url) {
 				return false;
 			}
 		}
-		_replaceSelection(cm, stat.link, options.insertTexts.link, url);
+		_replaceSelection(cm, stat.link, translate(options.insertTexts.link), url);
 	}
 }
 
@@ -14261,12 +14255,12 @@ function drawImage(editor) {
 	} else {
 		var url = "http://";
 		if(options.promptURLs) {
-			url = prompt(options.promptTexts.image);
+			url = prompt(translate(options.promptTexts.image));
 			if(!url) {
 				return false;
 			}
 		}
-		_replaceSelection(cm, stat.image, options.insertTexts.image, url);
+		_replaceSelection(cm, stat.image, translate(options.insertTexts.image), url);
 	}
 }
 /**
@@ -14705,6 +14699,23 @@ function wordCount(data) {
 	return count;
 }
 
+var translations = {};
+
+/**
+ * Translate string
+ */
+// eslint-disable-next-line no-unused-vars
+function translate(key) {
+	translations = SimpleMDE.translations || {};
+
+	// Prevent scrolling on body during fullscreen active
+	if(translations[key] !== undefined) {
+		return translations[key];
+	}
+
+	return key;
+}
+
 var toolbarBuiltInButtons = {
 	"bold": {
 		name: "bold",
@@ -14973,7 +14984,7 @@ function SimpleMDE(options) {
 
 
 	// Change unique_id to uniqueId for backwards compatibility
-	if(options.autosave != undefined && options.autosave.unique_id != undefined && options.autosave.unique_id != "")
+	if(options.autosave !== undefined && options.autosave.unique_id !== undefined && options.autosave.unique_id !== "")
 		options.autosave.uniqueId = options.autosave.unique_id;
 
 
@@ -15081,16 +15092,16 @@ SimpleMDE.prototype.render = function(el) {
 		mode: mode,
 		backdrop: backdrop,
 		theme: "paper",
-		tabSize: (options.tabSize != undefined) ? options.tabSize : 2,
-		indentUnit: (options.tabSize != undefined) ? options.tabSize : 2,
-		indentWithTabs: (options.indentWithTabs === false) ? false : true,
+		tabSize: (options.tabSize !== undefined) ? options.tabSize : 2,
+		indentUnit: (options.tabSize !== undefined) ? options.tabSize : 2,
+		indentWithTabs: (options.indentWithTabs !== false),
 		lineNumbers: false,
-		autofocus: (options.autofocus === true) ? true : false,
+		autofocus: (options.autofocus === true),
 		extraKeys: keyMaps,
-		lineWrapping: (options.lineWrapping === false) ? false : true,
+		lineWrapping: (options.lineWrapping !== false),
 		allowDropFileTypes: ["text/plain"],
 		placeholder: options.placeholder || el.getAttribute("placeholder") || "",
-		styleSelectedText: (options.styleSelectedText != undefined) ? options.styleSelectedText : true
+		styleSelectedText: (options.styleSelectedText !== undefined) ? options.styleSelectedText : true
 	});
 
 	if(options.forceSync === true) {
@@ -15108,7 +15119,7 @@ SimpleMDE.prototype.render = function(el) {
 	if(options.status !== false) {
 		this.gui.statusbar = this.createStatusbar();
 	}
-	if(options.autosave != undefined && options.autosave.enabled === true) {
+	if(options.autosave !== undefined && options.autosave.enabled === true) {
 		this.autosave();
 	}
 
@@ -15144,12 +15155,12 @@ SimpleMDE.prototype.autosave = function() {
 	if(isLocalStorageAvailable()) {
 		var simplemde = this;
 
-		if(this.options.autosave.uniqueId == undefined || this.options.autosave.uniqueId == "") {
+		if(this.options.autosave.uniqueId === undefined || this.options.autosave.uniqueId === "") {
 			console.log("SimpleMDE: You must set a uniqueId to use the autosave feature");
 			return;
 		}
 
-		if(simplemde.element.form != null && simplemde.element.form != undefined) {
+		if(simplemde.element.form !== null && simplemde.element.form !== undefined) {
 			simplemde.element.form.addEventListener("submit", function() {
 				localStorage.removeItem("smde_" + simplemde.options.autosave.uniqueId);
 			});
@@ -15167,7 +15178,7 @@ SimpleMDE.prototype.autosave = function() {
 		localStorage.setItem("smde_" + this.options.autosave.uniqueId, simplemde.value());
 
 		var el = document.getElementById("autosaved");
-		if(el != null && el != undefined && el != "") {
+		if(el !== null && el !== undefined && el !== "") {
 			var d = new Date();
 			var hh = d.getHours();
 			var m = d.getMinutes();
@@ -15177,12 +15188,12 @@ SimpleMDE.prototype.autosave = function() {
 				h = hh - 12;
 				dd = "pm";
 			}
-			if(h == 0) {
+			if(h === 0) {
 				h = 12;
 			}
 			m = m < 10 ? "0" + m : m;
 
-			el.innerHTML = "Autosaved: " + h + ":" + m + " " + dd;
+			el.innerHTML = translate("Autosaved: ") + h + ":" + m + " " + dd;
 		}
 
 		this.autosaveTimeoutId = setTimeout(function() {
@@ -15255,7 +15266,7 @@ SimpleMDE.prototype.createToolbar = function(items) {
 	}
 	var i;
 	for(i = 0; i < items.length; i++) {
-		if(toolbarBuiltInButtons[items[i]] != undefined) {
+		if(toolbarBuiltInButtons[items[i]] !== undefined) {
 			items[i] = toolbarBuiltInButtons[items[i]];
 		}
 	}
@@ -15264,20 +15275,24 @@ SimpleMDE.prototype.createToolbar = function(items) {
 	bar.className = "editor-toolbar";
 
 	var self = this;
+	var cm = this.codemirror;
 
 	var toolbarData = {};
 	self.toolbar = items;
 
 	for(i = 0; i < items.length; i++) {
-		if(items[i].name == "guide" && self.options.toolbarGuideIcon === false)
+		if(items[i].title !== undefined)
+			items[i].title = translate(items[i].title);
+
+		if(items[i].name === "guide" && self.options.toolbarGuideIcon === false)
 			continue;
 
-		if(self.options.hideIcons && self.options.hideIcons.indexOf(items[i].name) != -1)
+		if(self.options.hideIcons && self.options.hideIcons.indexOf(items[i].name) !== -1)
 			continue;
 
 		// Fullscreen does not work well on mobile devices (even tablets)
 		// In the future, hopefully this can be resolved
-		if((items[i].name == "fullscreen" || items[i].name == "side-by-side") && isMobile())
+		if((items[i].name === "fullscreen" || items[i].name === "side-by-side") && isMobile())
 			continue;
 
 
@@ -15286,7 +15301,7 @@ SimpleMDE.prototype.createToolbar = function(items) {
 			var nonSeparatorIconsFollow = false;
 
 			for(var x = (i + 1); x < items.length; x++) {
-				if(items[x] !== "|" && (!self.options.hideIcons || self.options.hideIcons.indexOf(items[x].name) == -1)) {
+				if(items[x] !== "|" && (!self.options.hideIcons || self.options.hideIcons.indexOf(items[x].name) === -1)) {
 					nonSeparatorIconsFollow = true;
 				}
 			}
@@ -15325,7 +15340,6 @@ SimpleMDE.prototype.createToolbar = function(items) {
 
 	self.toolbarElements = toolbarData;
 
-	var cm = this.codemirror;
 	cm.on("cursorActivity", function() {
 		var stat = getState(cm);
 
@@ -15334,7 +15348,7 @@ SimpleMDE.prototype.createToolbar = function(items) {
 				var el = toolbarData[key];
 				if(stat[key]) {
 					el.className += " active";
-				} else if(key != "fullscreen" && key != "side-by-side") {
+				} else if(key !== "fullscreen" && key !== "side-by-side") {
 					el.className = el.className.replace(/\s*active\s*/g, "");
 				}
 			})(key);
@@ -15380,17 +15394,17 @@ SimpleMDE.prototype.createStatusbar = function(status) {
 
 			if(name === "words") {
 				defaultValue = function(el) {
-					el.innerHTML = wordCount(cm.getValue());
+					el.innerHTML = translate("Words:") + " " + wordCount(cm.getValue());
 				};
 				onUpdate = function(el) {
-					el.innerHTML = wordCount(cm.getValue());
+					el.innerHTML = translate("Words:") + " " + wordCount(cm.getValue());
 				};
 			} else if(name === "lines") {
 				defaultValue = function(el) {
-					el.innerHTML = cm.lineCount();
+					el.innerHTML = translate("Lines:") + " " + cm.lineCount();
 				};
 				onUpdate = function(el) {
-					el.innerHTML = cm.lineCount();
+					el.innerHTML = translate("Lines:") + " " + cm.lineCount();
 				};
 			} else if(name === "cursor") {
 				defaultValue = function(el) {
