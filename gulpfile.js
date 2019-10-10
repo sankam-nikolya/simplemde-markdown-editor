@@ -14,7 +14,12 @@ var gulp = require("gulp"),
 	source = require("vinyl-source-stream"),
 	rename = require("gulp-rename");
 
-var banner = [
+var banner = ["/**",
+	" * <%= pkg.name %> v<%= pkg.version %>",
+	" * Copyright <%= pkg.company %>",
+	" * @link <%= pkg.homepage %>",
+	" * @license <%= pkg.license %>",
+	" */",
 	""].join("\n");
 
 gulp.task("prettify-js", gulp.series([], function() {
